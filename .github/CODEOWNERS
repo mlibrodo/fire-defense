@@ -1,0 +1,119 @@
+# CODEOWNERS file for Monorepo Template
+# This file defines who is responsible for different parts of the codebase
+# Format: path/to/file @username @team
+
+# Global project ownership
+* @miketatari
+
+# Documentation
+/docs/ @miketatari
+README.md @miketatari
+CODEOWNERS @miketatari
+
+# Build system
+Makefile @miketatari
+component-template.mk @miketatari
+
+# Component Ownership
+# Add component-specific ownership rules here as needed
+
+# Component Ownership
+# Add component-specific ownership rules here as needed
+
+# Shared Utilities
+/shared/ @miketatari
+
+# Configuration files
+.gitignore @miketatari
+*.toml @miketatari
+*.yaml @miketatari
+*.yml @miketatari
+*.json @miketatari
+
+# CI/CD and deployment
+.github/ @miketatari
+.github/workflows/ @miketatari
+.github/actions/ @miketatari
+
+# Docker and containerization
+Dockerfile* @miketatari
+docker-compose*.yml @miketatari
+.dockerignore @miketatari
+
+# Environment and secrets
+.env* @miketatari
+*.env @miketatari
+
+# Dependencies and lock files
+package*.json @miketatari
+yarn.lock @miketatari
+pnpm-lock.yaml @miketatari
+Cargo.lock @miketatari
+requirements.txt @miketatari
+Pipfile @miketatari
+poetry.lock @miketatari
+
+# Testing and quality
+tests/ @miketatari
+test/ @miketatari
+spec/ @miketatari
+__tests__/ @miketatari
+*.test.* @miketatari
+*.spec.* @miketatari
+coverage/ @miketatari
+.nyc_output/ @miketatari
+
+# IDE and editor files
+.vscode/ @miketatari
+.idea/ @miketatari
+*.swp @miketatari
+*.swo @miketatari
+*~ @miketatari
+
+# OS generated files
+.DS_Store @miketatari
+.DS_Store? @miketatari
+._* @miketatari
+.Spotlight-V100 @miketatari
+.Trashes @miketatari
+ehthumbs.db @miketatari
+Thumbs.db @miketatari
+
+# Logs and temporary files
+*.log @miketatari
+logs/ @miketatari
+tmp/ @miketatari
+temp/ @miketatari
+
+# Build artifacts
+target/ @miketatari
+build/ @miketatari
+dist/ @miketatari
+*.o @miketatari
+*.so @miketatari
+*.dll @miketatari
+*.exe @miketatari
+
+# Database and data files
+*.db @miketatari
+*.sqlite @miketatari
+*.sqlite3 @miketatari
+data/ @miketatari
+uploads/ @miketatari
+
+# Security and certificates
+*.pem @miketatari
+*.key @miketatari
+*.crt @miketatari
+*.p12 @miketatari
+*.pfx @miketatari
+secrets/ @miketatari
+certs/ @miketatari
+
+# Backup and archive files
+*.bak @miketatari
+*.backup @miketatari
+*.old @miketatari
+*.orig @miketatari
+*.tmp @miketatari
+*.temp @miketatari
