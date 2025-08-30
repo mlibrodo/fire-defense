@@ -1,0 +1,38 @@
+[package]
+name = "data-source-irwin"
+version = "0.1.0"
+edition = "2021"
+description = "IRWIN Data Source Library - A minimal read-only IRWIN client for querying incident data"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+repository = "https://github.com/mlibrodo/fire-defense"
+keywords = ["irwin", "arcgis", "fire", "incident", "api", "client"]
+categories = ["api-bindings", "web-programming"]
+
+[dependencies]
+# HTTP client
+reqwest = { version = "0.11", features = ["json"] }
+# JSON handling
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# URL handling
+url = "2.4"
+urlencoding = "2.1"
+# Async runtime (for tests)
+tokio = { version = "1.0", features = ["full"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1.0", features = ["full"] }
+
+[features]
+default = []
+full = ["tokio"]
+
+[lib]
+name = "data_source_irwin"
+path = "src/lib.rs"
+
+[[example]]
+name = "basic_usage"
+path = "examples/basic_usage.rs"
+

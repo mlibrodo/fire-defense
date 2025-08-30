@@ -1,0 +1,5 @@
+# Monorepo Component Metadata
+NAME=data-source-irwin
+LANG=rust
+CREATED=2025-08-29 22:13:52
+ARTIFACT_TYPE=library
