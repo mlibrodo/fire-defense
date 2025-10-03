@@ -1,6 +1,6 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-use reqwest::Client;
 use reqwest::header::{HeaderMap, HeaderValue};
+use reqwest::Client;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub mod error;
 pub mod types;
@@ -8,8 +8,8 @@ pub mod types;
 use error::IrwinError;
 
 // Re-export types for public API
-pub use types::{IrwinConfig, IncidentQuery, IncidentQueryBuilder};
 pub use types::environments;
+pub use types::{IncidentQuery, IncidentQueryBuilder, IrwinConfig};
 
 /// A stateless client for the IRWIN Incidents API
 pub struct IrwinClient {
@@ -22,7 +22,7 @@ impl IrwinClient {
     pub fn new(config: IrwinConfig) -> Result<Self, IrwinError> {
         let mut headers = HeaderMap::new();
         headers.insert("Referer", HeaderValue::from_str(&config.referer)?);
-        
+
         let http_client = Client::builder()
             .timeout(config.timeout)
             .default_headers(headers)
@@ -38,7 +38,7 @@ impl IrwinClient {
     pub async fn get_api_version(&self) -> Result<String, IrwinError> {
         let url = format!("{}/info?f=json", self.config.base_url);
         let response = self.http_client.get(&url).send().await?;
-        
+
         if response.status().is_success() {
             let text = response.text().await?;
             Ok(text)
@@ -53,61 +53,64 @@ impl IrwinClient {
     /// Query incidents using the provided query parameters
     pub async fn query_incidents(&self, query: &IncidentQuery) -> Result<String, IrwinError> {
         let mut params = Vec::new();
-        
+
         // Add required parameters
         params.push(("f".to_string(), "json".to_string()));
-        
+
         // Add query parameters
         if let Some(where_clause) = &query.where_clause {
             params.push(("where".to_string(), where_clause.clone()));
         }
-        
+
         if let Some(out_fields) = &query.out_fields {
             params.push(("outFields".to_string(), out_fields.clone()));
         }
-        
+
         if let Some(return_geometry) = &query.return_geometry {
             params.push(("returnGeometry".to_string(), return_geometry.clone()));
         }
-        
+
         // Add IRWIN-specific extensions
         if query.include_ads_status {
             params.push(("includeADSStatus".to_string(), "true".to_string()));
         }
-        
+
         if query.include_resources {
             params.push(("includeResources".to_string(), "true".to_string()));
         }
-        
+
         if query.include_relationships {
             params.push(("includeRelationships".to_string(), "true".to_string()));
         }
-        
+
         if query.include_last_sync_date_time {
             params.push(("includeLastSyncDateTime".to_string(), "true".to_string()));
         }
-        
+
         if query.include_ffr {
             params.push(("includeFFR".to_string(), "true".to_string()));
         }
-        
+
         // Generate token and add to params
         let token = self.generate_token().await?;
         params.push(("token".to_string(), token));
-        
+
         // Build URL with query parameters
-        let mut url = format!("{}/Irwin/Incidents/FeatureServer/0/query", self.config.base_url);
+        let mut url = format!(
+            "{}/Irwin/Incidents/FeatureServer/0/query",
+            self.config.base_url
+        );
         let query_string: String = params
             .iter()
             .map(|(k, v)| format!("{}={}", k, v))
             .collect::<Vec<_>>()
             .join("&");
-        
+
         url.push_str(&format!("?{}", query_string));
-        
+
         // Make the request
         let response = self.http_client.get(&url).send().await?;
-        
+
         if response.status().is_success() {
             let text = response.text().await?;
             Ok(text)
@@ -125,17 +128,20 @@ impl IrwinClient {
         let query = IncidentQueryBuilder::new()
             .where_clause(&where_clause)
             .build();
-        
+
         self.query_incidents(&query).await
     }
 
     /// Query incidents by unique fire identifiers
-    pub async fn query_by_unique_fire_identifiers(&self, fire_ids: &[String]) -> Result<String, IrwinError> {
+    pub async fn query_by_unique_fire_identifiers(
+        &self,
+        fire_ids: &[String],
+    ) -> Result<String, IrwinError> {
         let where_clause = format!("UniqueFireIdentifier IN ({})", fire_ids.join(","));
         let query = IncidentQueryBuilder::new()
             .where_clause(&where_clause)
             .build();
-        
+
         self.query_incidents(&query).await
     }
 
@@ -146,7 +152,7 @@ impl IrwinClient {
             .where_clause(&where_clause)
             .include_last_sync_date_time(true)
             .build();
-        
+
         self.query_incidents(&query).await
     }
 
@@ -167,28 +173,29 @@ impl IrwinClient {
         params.push(("referer".to_string(), self.config.referer.clone()));
         params.push(("expiration".to_string(), "60".to_string()));
         params.push(("f".to_string(), "json".to_string()));
-        
+
         let url = format!("{}/tokens/generateToken", self.config.base_url);
-        
+
         // Build form data manually since we don't have the form feature
         let body = params
             .iter()
             .map(|(k, v)| format!("{}={}", k, v))
             .collect::<Vec<_>>()
             .join("&");
-        
-        let response = self.http_client
+
+        let response = self
+            .http_client
             .post(&url)
             .header("Content-Type", "application/x-www-form-urlencoded")
             .body(body)
             .send()
             .await?;
-        
+
         if response.status().is_success() {
             let text = response.text().await?;
             // Parse the JSON response to extract the token
             let token_response: serde_json::Value = serde_json::from_str(&text)?;
-            
+
             if let Some(token) = token_response["token"].as_str() {
                 Ok(token.to_string())
             } else {
@@ -226,9 +233,15 @@ mod tests {
             .include_resources(true)
             .include_relationships(true)
             .build();
-        
-        assert_eq!(query.where_clause, Some("IsValid=1 AND IncidentTypeKind='FI'".to_string()));
-        assert_eq!(query.out_fields, Some("IrwinID,IncidentName,UniqueFireIdentifier".to_string()));
+
+        assert_eq!(
+            query.where_clause,
+            Some("IsValid=1 AND IncidentTypeKind='FI'".to_string())
+        );
+        assert_eq!(
+            query.out_fields,
+            Some("IrwinID,IncidentName,UniqueFireIdentifier".to_string())
+        );
         assert_eq!(query.return_geometry, Some("true".to_string()));
         assert!(query.include_resources);
         assert!(query.include_relationships);

@@ -104,19 +104,10 @@ repos:
   # =============================================================================
 
   # Java formatting (Google Java Format)
-  - repo: https://github.com/google/google-java-format
-    rev: v0.10.0
+  - repo: https://github.com/maltzj/google-style-precommit-hook
+    rev: b7e9e7fcba4a5aea463e72fe9964c14877bd8130
     hooks:
-      - id: google-java-format
-        args: [--aosp]
-        files: ^.*\.java$
-
-  # Java linting (Checkstyle)
-  - repo: https://github.com/checkstyle/checkstyle
-    rev: checkstyle-10.12.5
-    hooks:
-      - id: checkstyle
-        args: [-c, sun_checks.xml]
+      - id: google-style-java
         files: ^.*\.java$
 
   # =============================================================================
@@ -129,12 +120,12 @@ repos:
     hooks:
       - id: go-fmt
         files: ^.*\.go$
-      
+
       - id: go-vet
         files: ^.*\.go$
-      
+
       - id: go-imports
         files: ^.*\.go$
-      
+
       - id: golangci-lint
         files: ^.*\.go$

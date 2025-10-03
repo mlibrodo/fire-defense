@@ -5,22 +5,19 @@ use std::fmt;
 pub enum IrwinError {
     /// HTTP client errors
     HttpClientError(reqwest::Error),
-    
+
     /// API request errors
     RequestError(String),
-    
+
     /// API response errors
-    ApiError {
-        status: u16,
-        message: String,
-    },
-    
+    ApiError { status: u16, message: String },
+
     /// Serialization/deserialization errors
     SerializationError(serde_json::Error),
-    
+
     /// URL parsing errors
     UrlError(url::ParseError),
-    
+
     /// Header value errors
     HeaderError(reqwest::header::InvalidHeaderValue),
 }
@@ -30,7 +27,9 @@ impl fmt::Display for IrwinError {
         match self {
             IrwinError::HttpClientError(err) => write!(f, "HTTP client error: {}", err),
             IrwinError::RequestError(msg) => write!(f, "Request error: {}", msg),
-            IrwinError::ApiError { status, message } => write!(f, "API error ({}): {}", status, message),
+            IrwinError::ApiError { status, message } => {
+                write!(f, "API error ({}): {}", status, message)
+            }
             IrwinError::SerializationError(err) => write!(f, "Serialization error: {}", err),
             IrwinError::UrlError(err) => write!(f, "URL error: {}", err),
             IrwinError::HeaderError(err) => write!(f, "Header error: {}", err),
