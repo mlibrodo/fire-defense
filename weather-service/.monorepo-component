@@ -1,5 +1,5 @@
 # Monorepo Component Metadata
-NAME=wind-data-playground
+NAME=weather-service
 LANG=python
 CREATED=2025-10-03 12:19:43
 ARTIFACT_TYPE=cli
