@@ -57,6 +57,7 @@ monorepo-template/
 ### **Component Documentation Structure**
 
 Each component now includes:
+
 - **`docs/README.md`**: Detailed component documentation with features, usage, and language-specific information
 - **`README.md`**: Component overview and quick start information
 - **`.monorepo-component`**: Metadata file with component name, language, creation date, and artifact type

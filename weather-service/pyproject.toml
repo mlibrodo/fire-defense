@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pandas>=2.3.3",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -18,5 +20,9 @@ where = ["src"]
 
 [dependency-groups]
 dev = [
+    "black>=25.9.0",
+    "flake8>=7.3.0",
+    "isort>=6.1.0",
     "pytest>=8.4.2",
+    "responses>=0.25.8",
 ]

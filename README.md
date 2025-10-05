@@ -13,6 +13,7 @@ This monorepo template is designed to be flexible and can contain any combinatio
 - **Custom Components**: Any other language or framework you need
 
 ### **Multi-Language Support**
+
 - **Rust**: High-performance data processing and systems
 - **Python**: Business logic, data analysis, and ML components
 - **TypeScript**: Web interfaces, APIs, and frontend components
@@ -58,8 +59,6 @@ make help
 - **[Makefile Usage](./docs/makefile-usage.md)** - Complete guide to the build system
 
 - **[Multi-Language Components](./docs/multi-language-components.md)** - Component system guide
-
-
 
 ## Key Features
 
@@ -200,8 +199,8 @@ make list-components
 - **Pre-commit hooks**: 🟢 Installed and ready
 - **Build system**: 🟢 Ready for multi-language development
 
-
 ### **Language Support Status**
+
 - **Rust**: 🟢 Fully implemented with rustfmt, clippy, cargo
 - **Python**: 🟢 Fully implemented with black, flake8, isort, mypy
 - **TypeScript**: 🟢 Fully implemented with prettier, eslint, tsc

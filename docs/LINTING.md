@@ -43,6 +43,7 @@ monorepo-template/
 ```
 
 ### **Multi-Language Support**
+
 - **Rust**: All Rust components (default)
 - **Python**: logic-layer, business logic components
 - **TypeScript**: web-ui, mobile-ui, frontend components
@@ -53,6 +54,7 @@ monorepo-template/
 ### 🔍 **Pre-commit Hooks**
 
 #### **Universal Checks (All Languages)**
+
 - **end-of-file-fixer** - Ensures files end with newline
 - **trailing-whitespace** - Removes trailing whitespace
 - **file validation** - YAML, JSON, TOML format checks
@@ -60,17 +62,20 @@ monorepo-template/
 - **large file detection** - Prevents oversized files
 
 #### **Rust Components**
+
 - **rustfmt** - Code formatting for all `.rs` files
 - **clippy** - Advanced linting with strict rules
 - **cargo check** - Compilation verification
 
 #### **Python Components**
+
 - **black** - Code formatting (PEP 8 compliant)
 - **flake8** - Style and error checking
 - **isort** - Import sorting and organization
 - **mypy** - Static type checking (optional)
 
 #### **TypeScript/JavaScript Components**
+
 - **prettier** - Code formatting for all web files
 - **eslint** - Linting and error detection
 - **tsc** - TypeScript compilation check
@@ -186,6 +191,7 @@ git commit --no-verify
 ### **Language-Specific Configurations**
 
 #### **Python Components**
+
 - `pyproject.toml` - Project configuration and dependencies
 - `black` - Code formatting (PEP 8 compliant)
 - `flake8` - Style and error checking
@@ -193,6 +199,7 @@ git commit --no-verify
 - `mypy` - Static type checking
 
 #### **TypeScript Components**
+
 - `package.json` - Project configuration and dependencies
 - `tsconfig.json` - TypeScript compiler settings
 - `prettier` - Code formatting
@@ -240,6 +247,7 @@ cargo clippy --target x86_64-apple-darwin
 ### **Code Style by Language**
 
 #### **Rust**
+
 - Follow Rust conventions and idioms
 - Use meaningful variable names
 - Add documentation for public APIs
@@ -247,6 +255,7 @@ cargo clippy --target x86_64-apple-darwin
 - Use appropriate error types
 
 #### **Python**
+
 - Follow PEP 8 style guidelines
 - Use type hints where possible
 - Organize imports with `isort`
@@ -254,6 +263,7 @@ cargo clippy --target x86_64-apple-darwin
 - Use virtual environments for dependencies
 
 #### **TypeScript**
+
 - Follow ESLint rules and Prettier formatting
 - Use strict TypeScript settings
 - Write comprehensive type definitions

@@ -156,7 +156,7 @@ make add-component NAME=api-gateway
 
 1. **Explore the components**: Use `make list-components` to see available components
 2. **Set up your IDE**: Configure your editor for your chosen languages
-4. **Join the development**: Check the [Development Guidelines](./development-guidelines.md)
+3. **Join the development**: Check the [Development Guidelines](./development-guidelines.md)
 
 ## Troubleshooting
 

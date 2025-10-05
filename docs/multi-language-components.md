@@ -20,7 +20,7 @@ The Monorepo Template supports multiple programming languages, allowing you to c
 Components can be created with specific artifact types to indicate their purpose:
 
 - **`library`**: Reusable code libraries and packages
-- **`service`**: Backend services and APIs  
+- **`service`**: Backend services and APIs
 - **`webapp`**: Web applications and frontends
 - **`cli`**: Command-line interface tools
 - **`docker`**: Containerized applications
@@ -88,11 +88,13 @@ component-name/
 ```
 
 **Pre-commit Hooks:**
+
 - `rustfmt` - Code formatting
 - `clippy` - Advanced linting
 - `cargo check` - Compilation verification
 
 **Build Commands:**
+
 ```bash
 make -C component-name build    # Build component
 make -C component-name test     # Run tests
@@ -120,12 +122,14 @@ component-name/
 ```
 
 **Pre-commit Hooks:**
+
 - `black` - PEP 8 compliant formatting
 - `flake8` - Style and error checking
 - `isort` - Import sorting and organization
 - `mypy` - Static type checking
 
 **Build Commands:**
+
 ```bash
 make -C component-name build    # Install in development mode
 make -C component-name test     # Run pytest
@@ -156,11 +160,13 @@ component-name/
 ```
 
 **Pre-commit Hooks:**
+
 - `google-java-format` - Code formatting (Google style)
 - `checkstyle` - Code quality and style checking
 - `mvn validate` - Maven validation
 
 **Build Commands:**
+
 ```bash
 make -C component-name build    # Build component
 make -C component-name test     # Run tests
@@ -186,12 +192,14 @@ component-name/
 ```
 
 **Pre-commit Hooks:**
+
 - `go fmt` - Code formatting
 - `goimports` - Import organization
 - `go vet` - Code analysis
 - `golangci-lint` - Comprehensive linting
 
 **Build Commands:**
+
 ```bash
 make -C component-name build    # Build component
 make -C component-name test     # Run tests
@@ -201,11 +209,13 @@ make -C component-name run      # Run component
 ```
 
 **Pre-commit Hooks:**
+
 - `prettier` - Code formatting
 - `eslint` - Linting and error detection
 - `tsc` - TypeScript compilation check
 
 **Build Commands:**
+
 ```bash
 make -C component-name build    # Compile TypeScript
 make -C component-name test     # Run Jest tests
@@ -346,6 +356,7 @@ Hooks are automatically applied based on file extensions:
 To add support for a new language:
 
 1. **Update the Makefile**:
+
    ```makefile
    configure-new-language-component: ## Configure New Language component
        @echo "Setting up New Language component: $(NAME)"
@@ -353,6 +364,7 @@ To add support for a new language:
    ```
 
 2. **Update pre-commit configuration**:
+
    ```yaml
    # NEW LANGUAGE COMPONENTS
    - repo: https://github.com/example/tool
@@ -400,28 +412,31 @@ make test-integration            # Cross-language tests
 ### **Common Issues**
 
 1. **Language Tools Not Found**:
+
    ```bash
    # Install Python tools
    pip install black flake8 isort mypy
-   
+
    # Install Node.js tools
    npm install -g prettier eslint typescript
    ```
 
 2. **Pre-commit Hook Failures**:
+
    ```bash
    # Run specific hook manually
    pre-commit run black --all-files
-   
+
    # Check hook configuration
    cat .pre-commit-config.yaml
    ```
 
 3. **Build Failures**:
+
    ```bash
    # Check component status
    make status
-   
+
    # Clean and rebuild
    make clean && make build
    ```
@@ -486,4 +501,4 @@ make test-integration            # Cross-language tests
 
 ---
 
-*This multi-language component system provides the flexibility to use the right tool for each job while maintaining consistent quality standards across your entire monorepo.*
+_This multi-language component system provides the flexibility to use the right tool for each job while maintaining consistent quality standards across your entire monorepo._

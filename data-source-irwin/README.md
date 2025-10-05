@@ -18,6 +18,7 @@ This library provides a stateless client for querying wildland fire incident dat
 ## IRWIN API Support
 
 The client supports the core IRWIN Incidents API features:
+
 - Query incidents with custom WHERE clauses
 - Include/exclude resources, relationships, and metadata
 - Incremental synchronization using ModifiedOnDateTime
@@ -38,7 +39,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "your_password".to_string(),
         "your_referer".to_string(),
     );
-    
+
     let client = IrwinClient::new(config)?;
     Ok(())
 }

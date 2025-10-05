@@ -69,6 +69,7 @@ repos:
     hooks:
       - id: flake8
         files: ^.*\.py$
+        args: [--max-line-length=131]
 
   # Python import sorting
   - repo: https://github.com/pycqa/isort
@@ -76,6 +77,7 @@ repos:
     hooks:
       - id: isort
         files: ^.*\.py$
+        args: [--profile, black]
 
   # =============================================================================
   # TYPESCRIPT/JAVASCRIPT COMPONENTS
