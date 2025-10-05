@@ -24,18 +24,19 @@ data source (forecast vs. observation) provided the data.
 ## 🧱 Package layout
 
 ```
-src/weather/
+src/weather_service/
 ├── __init__.py
 ├── typedefs.py        # Core types & enums (atomic building blocks)
 ├── payloads.py        # Atomic weather payloads (Wind, WX, Quality)
 ├── models.py          # Domain models (SeriesPoint, Segment*, Rollups, Request/Response)
 ├── math.py            # Shared math utilities (bearing, projection, VPD, rollups)
-├── protocols.py       # Adapter protocol definition
+├── protocols.py       # Adapter + StationResolver protocols
 ├── service.py         # WeatherService orchestrator (routing/fallback logic)
 └── adapters/
     ├── __init__.py
     ├── nws.py         # NWS forecast adapter
-    └── ndbc.py        # NDBC real-time observation adapter
+    ├── ndbc.py        # NDBC real-time observation adapter
+    └── ndbc_station_resolver.py  # internal resolver for nearest buoy
 ```
 
 ---
@@ -54,8 +55,8 @@ src/weather/
 | **Adapter**            | `NWSAdapter` (forecast)                                  | `NDBCAdapter` (observation)                  |
 
 **In short:**
-Use **NDBC** for _now_ (real-time sensor data), and **NWS** for _next_ (forecast grids).
-The WeatherService can blend or fallback between them transparently.
+Use **NDBC** for _now_ (real-time sensor data) and **NWS** for _next_ (forecast grids).
+The `WeatherService` blends or falls back between them automatically.
 
 ---
 
@@ -70,31 +71,36 @@ typedefs  →  payloads  →  models  →  adapters  →  service
                  protocols ──────────────┘
 ```
 
-- **typedefs.py** — minimal, reusable primitives (no domain logic).
-- **payloads.py** — atomic weather concepts (Wind, WX, Quality).
-- **models.py** — high-level, typed request/response structures.
-- **math.py** — stateless pure functions (geometry & physics).
-- **protocols.py** — defines `WeatherAdapter` interface.
-- **adapters/** — concrete data source implementations (NWS, NDBC, etc.).
-- **service.py** — orchestrates adapters; provides single public entrypoint.
+- **typedefs.py** — minimal, reusable primitives (no domain logic)
+- **payloads.py** — atomic weather concepts (Wind, WX, Quality)
+- **models.py** — high-level typed request/response structures
+- **math.py** — stateless pure functions (geometry & physics)
+- **protocols.py** — defines `WeatherAdapter` + `StationResolver` interfaces
+- **adapters/** — concrete data source implementations (NWS, NDBC, etc.)
+- **service.py** — orchestrates adapters; single public entrypoint
 
 ---
 
-## ⚙️ Public API
+## ⚙️ Public API (source-agnostic)
 
 ```python
 from datetime import datetime, timezone
-from weather import (
+from weather_service import (
     WeatherService, SegmentRequest, LatLon, TimeSpec, TimeMode,
-    SamplingSpec, SamplingStrategy, UnitsSpec
+    SamplingSpec, SamplingStrategy, UnitsSpec,
 )
 from weather_service.adapters import NWSAdapter, NDBCAdapter
+from weather_service.adapters.ndbc_station_resolver import NDBCStationResolver
+
+# Internal bootstrap (not public API)
+resolver = NDBCStationResolver(csv_path="/opt/data/ndbc/stations.csv", max_km=300)
 
 svc = WeatherService(adapters=[
-    NDBCAdapter(station_id="46026", source_token="opaque-obs-1"),
+    NDBCAdapter(resolver=resolver, source_token="opaque-obs-1"),
     NWSAdapter(source_token="opaque-fcst-1"),
 ])
 
+# Publicly exposed interface remains simple and provider-agnostic:
 req = SegmentRequest(
     a=LatLon(39.197, -120.238),
     b=LatLon(39.250, -120.150),
@@ -108,9 +114,16 @@ print(resp.segment)
 print(len(resp.series), "points")
 ```
 
+**Note:**
+The caller does **not** know about NDBC station IDs.
+The `NDBCAdapter` internally uses the `NDBCStationResolver` to find the nearest buoy to point A (or midpoint).
+If no valid station is found or data are stale, the service falls back to `NWSAdapter`.
+
+---
+
 ### Returns → `SegmentResponse`
 
-A strongly-typed dataclass containing:
+A strongly-typed dataclass:
 
 ```python
 SegmentResponse(
@@ -120,16 +133,29 @@ SegmentResponse(
       time_utc = datetime(...),
       wind = Wind(speed_ms=6.1, dir_from_deg=210.0, along_ms=3.8, cross_ms=-4.7),
       wx   = WX(temp_c=27.0, rh_pct=18, vpd_kpa=2.6, precip_mm_1h=0.0),
-      quality = Quality(source_token="opaque-fcst-1")
+      quality = Quality(source_token="opaque-fcst-1"),
     ),
     ...
   ),
   rollups = Rollups(max_gust_ms=14.2, hours_rh_below_20=7, ...),
   meta_units = UnitsSpec(),
   horizon_hours = 24,
-  sampling = SamplingStrategy.POINT_A
+  sampling = SamplingStrategy.POINT_A,
 )
 ```
+
+---
+
+## 🔒 Adapter Resolution & Privacy
+
+`WeatherService` hides all provider-specific details from its public API:
+
+- The `NDBCAdapter` determines the correct station via `NDBCStationResolver`
+  (using a cached local CSV of buoy locations).
+- Errors or unavailability are abstracted as generic “unavailable” signals.
+- The fallback order is defined by adapter order in service construction.
+- This keeps the interface consistent even if new data providers are added
+  (e.g., METAR, MADIS, HRRR).
 
 ---
 
@@ -147,9 +173,9 @@ All vector math and meteorological conversions live in `math.py`:
 
 ## 🪶 Adding a new data source
 
-1. Create a new adapter in `src/weather/adapters/`:
+1. Create a new adapter in `src/weather_service/adapters/`:
    ```bash
-   touch src/weather/adapters/mynewsource.py
+   touch src/weather_service/adapters/mynewsource.py
    ```
 2. Implement the `WeatherAdapter` protocol:
 
@@ -166,7 +192,7 @@ All vector math and meteorological conversions live in `math.py`:
            ...
    ```
 
-3. Register it in `WeatherService`:
+3. Register it in the service (e.g., in `bootstrap_weather.py`):
    ```python
    from weather_service.adapters import MyNewSourceAdapter
    svc = WeatherService(adapters=[MyNewSourceAdapter(), ...])
@@ -176,16 +202,14 @@ All vector math and meteorological conversions live in `math.py`:
 
 ## 🧪 Testing
 
-Each layer can be unit-tested in isolation:
-
 | Layer      | Test focus                             |
 | ---------- | -------------------------------------- |
 | `math`     | pure functions — deterministic, no I/O |
 | `adapters` | mock upstream HTTP responses           |
-| `service`  | adapter fallback logic                 |
-| `models`   | serialization / consistency checks     |
+| `service`  | adapter routing / fallback             |
+| `models`   | serialization & type safety            |
 
-You can serialize any dataclass tree via:
+Example:
 
 ```python
 from dataclasses import asdict
@@ -200,7 +224,8 @@ json_payload = asdict(resp)
 - [ ] MADIS quality-controlled obs adapter
 - [ ] `schemas.py` for external API serialization (Pydantic v2)
 - [ ] Fire risk indices (FFWI, ERC) computed from existing fields
-- [ ] Local caching / rate limiting layer
+- [ ] Local caching / rate-limiting layer
+- [ ] Adaptive station resolvers (e.g., METAR, RAWS)
 
 ---
 
@@ -214,5 +239,5 @@ json_payload = asdict(resp)
 ---
 
 **Author:**
-Internal Fire Defense / Weather Ingestion Layer
+Internal Fire Defense / Weather Service Ingestion Layer
 © 2025 — All rights reserved.

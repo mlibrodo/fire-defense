@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 import responses
-from weather_service.adapters.ndbc import NDBCAdapter
+from weather_service.adapters import NDBCAdapter, NDBCStationResolver
 from weather_service.models import SegmentRequest
 from weather_service.typedefs import (
     LatLon,
@@ -12,7 +12,7 @@ from weather_service.typedefs import (
     UnitsSpec,
 )
 
-NDBC_URL = "https://www.ndbc.noaa.gov/data/realtime2/46026.txt"
+NDBC_URL = "https://www.ndbc.noaa.gov/data/realtime2/1.txt"
 
 SAMPLE = "#YY  MM DD hh mm WDIR WSPD GST\n2025 10 04 20 00 180 5.0 7.0\n"
 
@@ -22,7 +22,9 @@ def test_ndbc_adapter_latest_row_parsed_and_projected():
     responses.add(
         responses.GET, NDBC_URL, body=SAMPLE, status=200, content_type="text/plain"
     )
-    ad = NDBCAdapter(station_id="46026", source_token="opaque-obs-test")
+    ad = NDBCAdapter(
+        resolver=NDBCStationResolver(station_id="1"), source_token="opaque-obs-test"
+    )
     req = SegmentRequest(
         a=LatLon(39.197, -120.238),
         b=LatLon(39.250, -120.150),
