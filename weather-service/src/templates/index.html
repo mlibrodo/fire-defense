@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Weather Service</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        form, .result {
+            max-width: 860px;
+        }
+
+        label {
+            display: block;
+            margin: .5rem 0 .25rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: .5rem;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: .6rem 1rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .note {
+            background: #fff7e6;
+            border: 1px solid #ffe8b3;
+            padding: .75rem;
+            border-radius: .5rem;
+        }
+
+        .small {
+            color: #555;
+            font-size: .9rem;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Weather Service</h1>
+<p class="small">This page queries the <code>/api/wind</code> endpoint. The service normalizes data from forecast (NWS)
+    and observation (NDBC) sources.</p>
+
+<div class="note">
+    <strong>Parameters:</strong>
+    <ul>
+        <li><code>mode</code> — <em>forecast</em> uses NOAA/NWS model grids for predicted winds,
+            while <em>obs</em> uses live station readings from the NDBC buoy network
+            (if no nearby station is found, the service automatically falls back to forecast data).
+        </li>
+        <li><code>level_m_agl</code> — sampling height in meters <em>above ground level</em>.
+            Common values: 2 (near-surface), 10 (standard wind), 20+ (elevated).
+        </li>
+    </ul>
+</div>
+
+<form id="frm">
+    <div class="grid-2">
+        <div>
+            <label for="alat">A latitude</label>
+            <input id="alat" name="alat" type="number" step="any" required value="39.197">
+        </div>
+        <div>
+            <label for="alon">A longitude</label>
+            <input id="alon" name="alon" type="number" step="any" required value="-120.238">
+        </div>
+        <div>
+            <label for="blat">B latitude</label>
+            <input id="blat" name="blat" type="number" step="any" required value="39.250">
+        </div>
+        <div>
+            <label for="blon">B longitude</label>
+            <input id="blon" name="blon" type="number" step="any" required value="-120.150">
+        </div>
+    </div>
+    <div class="grid-3">
+        <div>
+            <label for="hours">Hours</label>
+            <input id="hours" name="hours" type="number" value="24">
+        </div>
+        <div>
+            <label for="mode">Mode</label>
+            <select id="mode" name="mode">
+                <option value="forecast" selected>forecast (NWS)</option>
+                <option value="obs">obs (NDBC)</option>
+            </select>
+            <div class="small">Determines which data source family is queried.</div>
+        </div>
+        <div>
+            <label for="level">Level (m AGL)</label>
+            <input id="level" name="level" type="number" value="10">
+            <div class="small">Sampling height in meters above ground level.</div>
+        </div>
+    </div>
+    <button type="submit">Fetch</button>
+</form>
+
+<div class="result">
+    <h2>Result</h2>
+    <pre id="out"></pre>
+</div>
+
+<script>
+    const frm = document.getElementById('frm');
+    const out = document.getElementById('out');
+    frm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams({
+            alat: frm.alat.value,
+            alon: frm.alon.value,
+            blat: frm.blat.value,
+            blon: frm.blon.value,
+            hours: frm.hours.value,
+            mode: frm.mode.value,
+            level_m_agl: frm.level.value
+        });
+        out.textContent = 'Loading...';
+        try {
+            const res = await fetch('/api/wind?' + params.toString());
+            const json = await res.json();
+            out.textContent = JSON.stringify(json, null, 2);
+        } catch (err) {
+            out.textContent = 'Error: ' + err;
+        }
+    });
+</script>
+</body>
+</html>
