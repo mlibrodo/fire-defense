@@ -1,0 +1,5 @@
+# Monorepo Component Metadata
+NAME=firefinder-service
+LANG=python
+CREATED=2025-10-05 07:36:59
+ARTIFACT_TYPE=library
