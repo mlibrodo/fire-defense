@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: weather-service
+    env: python
+    plan: free
+    rootDir: weather-service # 👈 tells Render where to run from
+    buildCommand: pip install uv && uv sync --extra web --frozen
+    startCommand: uv run uvicorn weather_service.webapp:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: NDBC_MAX_KM
+        value: "300"

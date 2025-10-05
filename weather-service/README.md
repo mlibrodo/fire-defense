@@ -99,6 +99,36 @@ print(resp.segment)
 print(len(resp.series), "points")
 ```
 
+## 🚀 Deployment (Render + uv)
+
+The project is preconfigured for [Render](https://render.com) using **uv** for dependency management.
+
+### 🛠️ Build & start commands
+
+**Build:**
+
+```bash
+pip install uv && uv sync --extra web --frozen
+```
+
+**Start:**
+
+```bash
+uv run uvicorn weather_service.webapp:app --host 0.0.0.0 --port $PORT
+```
+
+Render automatically provides `$PORT` and handles HTTPS and health checks.
+
+Once live, visit:
+
+```
+https://<your-service-name>.onrender.com/
+```
+
+> 💡 **More info:**
+> For detailed deployment steps, environment variables, and Render health check setup,
+> see [docs/RENDER_DEPLOY.md](docs/RENDER_DEPLOY.md).
+
 ---
 
 ## 📚 References
