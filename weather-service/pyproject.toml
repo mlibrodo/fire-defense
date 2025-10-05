@@ -9,9 +9,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi[web]>=0.118.0",
     "pandas>=2.3.3",
-    "uvicorn[web]>=0.37.0",
+]
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.118.0",
+    "uvicorn[standard]>=0.37.0",
 ]
 
 [tool.setuptools]
