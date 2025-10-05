@@ -45,7 +45,20 @@ def build_service() -> WeatherService:
 api = APIRouter(prefix="/api", tags=["api"])
 pages = APIRouter(tags=["pages"])
 
+health = APIRouter()
+
 svc = build_service()
+
+
+@health.get("/api/health", tags=["system"])
+def health_check():
+    """
+    Simple readiness endpoint.
+
+    Returns:
+        JSON object: {"status": "ok"}
+    """
+    return {"status": "ok"}
 
 
 @api.get("/wind")
@@ -97,6 +110,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Weather Service", version="0.1.0")
     app.include_router(api)
     app.include_router(pages)
+    app.include_router(health)
     return app
 
 
