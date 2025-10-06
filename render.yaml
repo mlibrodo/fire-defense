@@ -9,3 +9,14 @@ services:
     envVars:
       - key: NDBC_MAX_KM
         value: "300"
+  - type: web
+    name: firefinder
+    env: python
+    plan: free
+    rootDir: firefinder-service # 👈 tells Render where to run from
+    buildCommand: |
+      pip install uv && uv sync --extra web --frozen
+    startCommand: |
+      uv run uvicorn firefinder_service.webapp:app --host 0.0.0.0 --port $PORT
+    region: oregon
+    envVars: []

@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>FireFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;margin:2rem;line-height:1.5}
+      .grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+      .card{border:1px solid #ddd;border-radius:12px;padding:16px;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+      .card h2{margin:0 0 8px 0;font-size:1.1rem}
+      label{display:block;font-size:.9rem;margin-top:10px}
+      input{padding:8px;border:1px solid #ccc;border-radius:8px;width:100%}
+      button{margin-top:10px;padding:8px 12px;border:0;border-radius:8px;background:#0d6efd;color:#fff;cursor:pointer}
+      pre{background:#f8f9fa;padding:12px;border-radius:8px;overflow:auto;max-height:380px}
+      .row{display:flex;gap:8px}
+      .row>div{flex:1}
+    </style>
+  </head>
+  <body>
+    <h1>FireFinder</h1>
+    <div class="grid">
+      <!-- Nearby -->
+      <div class="card">
+        <h2>Nearby Fires</h2>
+        <div class="row">
+          <div>
+            <label>Latitude</label>
+            <input id="near-lat" value="39.195" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input id="near-lon" value="-120.235" />
+          </div>
+          <div>
+            <label>Radius (mi)</label>
+            <input id="near-r" value="50" />
+          </div>
+        </div>
+        <button onclick="runNearby()">Search</button>
+        <pre id="near-out"></pre>
+      </div>
+
+      <!-- Distance to Incident -->
+      <div class="card">
+        <h2>Distance to Incident</h2>
+        <div class="row">
+          <div>
+            <label>Latitude</label>
+            <input id="dist-lat" value="39.195" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input id="dist-lon" value="-120.235" />
+          </div>
+        </div>
+        <label>Incident ID (e.g., IRWIN123)</label>
+        <input id="dist-id" value="IRWIN123" />
+        <button onclick="runDistance()">Measure</button>
+        <pre id="dist-out"></pre>
+      </div>
+
+      <!-- Get Incident by ID -->
+      <div class="card">
+        <h2>Get Incident by ID</h2>
+        <label>Incident ID</label>
+        <input id="get-id" value="IRWIN123" />
+        <button onclick="runGetIncident()">Fetch</button>
+        <pre id="get-out"></pre>
+      </div>
+    </div>
+
+    <script>
+      async function runNearby(){
+        const lat = document.getElementById('near-lat').value;
+        const lon = document.getElementById('near-lon').value;
+        const r   = document.getElementById('near-r').value;
+        const res = await fetch(`/api/nearby?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&radius_mi=${encodeURIComponent(r)}`);
+        document.getElementById('near-out').textContent = JSON.stringify(await res.json(), null, 2);
+      }
+
+      async function runDistance(){
+        const lat = document.getElementById('dist-lat').value;
+        const lon = document.getElementById('dist-lon').value;
+        const id  = document.getElementById('dist-id').value.trim();
+        const res = await fetch(`/api/distance?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&id=${encodeURIComponent(id)}`);
+        document.getElementById('dist-out').textContent = JSON.stringify(await res.json(), null, 2);
+      }
+
+      async function runGetIncident(){
+        const id  = document.getElementById('get-id').value.trim();
+        const res = await fetch(`/api/incident/${encodeURIComponent(id)}`);
+        document.getElementById('get-out').textContent = JSON.stringify(await res.json(), null, 2);
+      }
+    </script>
+  </body>
+</html>

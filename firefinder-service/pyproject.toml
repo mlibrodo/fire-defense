@@ -3,13 +3,15 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "firefinder_service"
+name = "firefinder-service"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pandas>=2.3.3",
+    "pydantic>=2.11.10",
+    "requests>=2.32.5",
 ]
 
 [project.optional-dependencies]
@@ -18,11 +20,18 @@ web = [
     "uvicorn[standard]>=0.37.0",
 ]
 
+#arcgis = [
+#   if using arcgis natively instead of using the REST api.
+#   See firefinder-service/src/firefinder_service/adapters/arcgis.py
+#    "arcgis>=2.3.0",
+#]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["firefinder_service*"]
 
 [dependency-groups]
 dev = [
