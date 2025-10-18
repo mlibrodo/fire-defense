@@ -1,0 +1,4 @@
+# Monorepo Component Metadata
+NAME=suppression-policy-engine
+LANG=rust
+CREATED=2025-10-17 18:35:36
