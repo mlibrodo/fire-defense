@@ -20,3 +20,20 @@ services:
       uv run uvicorn firefinder_service.webapp:app --host 0.0.0.0 --port $PORT
     region: oregon
     envVars: []
+  - type: web
+    name: suppression-policy-engine
+    env: rust
+    plan: free
+    rootDir: suppression-policy-engine
+    buildCommand: cargo build --release
+    startCommand: ./target/release/suppression-policy-engine
+    region: oregon
+    envVars:
+      - key: RUST_LOG
+        value: "info"
+      - key: PORT
+        value: "8100"
+      - key: CBW_BASE_URL
+        value: "https://device-gateway.local"
+      - key: CBW_API_KEY
+        sync: false # mark secret in Render dashboard
