@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Suppression Policy Engine</title></head>
+<body>
+<h1>Suppression Policy Engine</h1>
+
+<form action="/api/evaluate" method="get" target="_blank">
+  <label>
+    Installation:
+    <select name="installation_id">
+      <option value="house-123">house-123</option>
+      <option value="house-456">house-456</option>
+    </select>
+  </label>
+  <br/>
+  <label>
+    Policy:
+    <select name="policy">
+      <option value="observe">Observe (L1)</option>
+      <option value="prepare">Prepare (L2)</option>
+      <option value="defend">Defend (L3)</option>
+      <option value="contain">Contain (L4)</option>
+      <option value="suppress">Suppress (L5)</option>
+    </select>
+  </label>
+  <br/>
+  <label><input type="checkbox" name="dry_run" value="true" /> Dry run</label>
+  <br/>
+  <button type="submit">Evaluate</button>
+</form>
+
+<hr/>
+
+<section>
+  <h2>Policy Summaries</h2>
+  {{policy_table}}
+</section>
+
+<p><a href="/api/health" target="_blank">/api/health</a></p>
+</body>
+</html>
