@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use tracing::info;
 
-use crate::dal::{Command, CommandResult, DeviceDriver};
+use crate::device_abstraction_layer::{Command, CommandResult, DeviceDriver};
 
 pub struct MockDriver;
 

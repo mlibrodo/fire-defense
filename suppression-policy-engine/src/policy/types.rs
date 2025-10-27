@@ -38,22 +38,6 @@ impl Policy {
             Policy::Unknown => "Unrecognized policy.",
         }
     }
-
-    pub fn actions(self) -> &'static [&'static str] {
-        match self {
-            Policy::Observe => &["monitor"],
-            Policy::Prepare => &["arm_sensors", "stage_pumps"],
-            Policy::Defend => &["arm_sensors", "enable_pumps_low"],
-            Policy::Contain => &["arm_sensors", "enable_pumps_high", "open_valves_priority"],
-            Policy::Suppress => &[
-                "arm_sensors",
-                "enable_pumps_high",
-                "open_valves_all",
-                "lockdown",
-            ],
-            Policy::Unknown => &["noop"],
-        }
-    }
 }
 
 impl fmt::Display for Policy {

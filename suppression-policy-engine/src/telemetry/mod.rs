@@ -1,3 +1,3 @@
 pub mod sink;
 
-pub use sink::{NoopSink, TelemetryEvent, TelemetrySink};
+pub use sink::{NoopSink, TelemetrySink};
