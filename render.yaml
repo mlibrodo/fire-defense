@@ -28,6 +28,4 @@ services:
     buildCommand: cargo build --release
     startCommand: ./target/release/suppression-policy-engine
     region: oregon
-    envVars: # incomplete set in render web ui
-      - key: PORT
-        value: $PORT
+    envVars: [] # incomplete set in render web ui
