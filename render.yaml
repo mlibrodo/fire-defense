@@ -28,12 +28,6 @@ services:
     buildCommand: cargo build --release
     startCommand: ./target/release/suppression-policy-engine
     region: oregon
-    envVars:
-      - key: RUST_LOG
-        value: "info"
+    envVars: # incomplete set in render web ui
       - key: PORT
-        value: "8100"
-      - key: CBW_BASE_URL
-        value: "https://device-gateway.local"
-      - key: CBW_API_KEY
-        sync: false # mark secret in Render dashboard
+        value: $PORT
