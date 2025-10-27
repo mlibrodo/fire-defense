@@ -10,6 +10,7 @@ pub enum ApiError {
     BadRequest(&'static str),
     Conflict(&'static str),
     NotFound(&'static str),
+    Internal(String),
 }
 
 #[derive(Serialize)]
@@ -39,6 +40,11 @@ impl IntoResponse for ApiError {
                 Json(ErrBody {
                     error: msg.to_string(),
                 }),
+            )
+                .into_response(),
+            ApiError::Internal(msg) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrBody { error: msg }),
             )
                 .into_response(),
         }
