@@ -25,7 +25,7 @@ impl ControlByWebConfig {
             username,
             password,
             connect_timeout: Duration::from_secs(5),
-            request_timeout: Duration::from_secs(8),
+            request_timeout: Duration::from_secs(60),
         })
     }
 
