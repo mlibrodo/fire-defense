@@ -52,12 +52,7 @@ impl SimpleEnactor {
                 Command::EnablePumpsHigh,
                 Command::OpenValvesPriority,
             ],
-            Policy::Suppress => vec![
-                Command::ArmSensors,
-                Command::EnablePumpsHigh,
-                Command::OpenValvesAll,
-                Command::Lockdown,
-            ],
+            Policy::Suppress => vec![Command::Lockdown],
             Policy::Unknown => vec![Command::Noop],
         }
     }

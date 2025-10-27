@@ -130,7 +130,6 @@ impl TokenManager {
     ) -> anyhow::Result<reqwest::RequestBuilder> {
         debug!("attaching auth {req:#?}");
         let tok = self.ensure_token().await?;
-        debug!("XXXXX  {}", tok.as_str());
         Ok(req.bearer_auth(tok))
     }
 }

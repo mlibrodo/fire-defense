@@ -38,10 +38,6 @@ impl InMemoryResolver {
 
 impl InstallationAccountResolver for InMemoryResolver {
     fn resolve(&self, installation_id: &str) -> Option<AccountBinding> {
-        debug!(
-            "XXXXXXXX {:#?} {:?}",
-            self.default_account, &self.default_device
-        );
         if let Some((account_id, device_id)) = self.map.get(installation_id) {
             Some(AccountBinding {
                 account_id: *account_id,
